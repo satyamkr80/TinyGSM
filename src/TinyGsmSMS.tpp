@@ -45,6 +45,20 @@ class TinyGsmSMS {
     h=thisModem().stream.readStringUntil('\n');
     return h;
   }
+  String readSMS(int index, String &sender, String &message, const bool changeStatusToRead = true){
+    thisModem().sendAT(GF("+CMGF=1"));
+    thisModem().waitResponse();  
+    thisModem().sendAT(GF("+CMGR="), index, GF(","), static_cast<const uint8_t>(!changeStatusToRead)); 
+    sender = "";
+    message = "";
+    thisModem().streamSkipUntil('"');
+    thisModem().streamSkipUntil('"');
+    thisModem().streamSkipUntil('"');
+    sender = thisModem().stream.readStringUntil('"');
+    thisModem().streamSkipUntil('\n');
+    message = thisModem().stream.readStringUntil('\n');
+    return message;
+  }
   int newMessageIndex(bool mode){
     thisModem().sendAT(GF("+CMGF=1"));
     thisModem().waitResponse();  
