@@ -85,6 +85,12 @@ class TinyGsmSMS {
     thisModem().sendAT(GF("+CMGDA=\"DEL ALL\""));
     return thisModem().waitResponse(60000L) == 1;
   }
+  bool deleteSMS(int index, int delflag=0) {
+    thisModem().sendAT(GF("+CMGF=1"));
+    thisModem().waitResponse(); 
+    thisModem().sendAT(GF("+CMGD="), index, GF(","), delflag);
+    return thisModem().waitResponse(5000L) == 1;
+  }
   String getSenderID(int index, const bool changeStatusToRead = true){
     thisModem().sendAT(GF("+CMGF=1"));
     thisModem().waitResponse(); 
