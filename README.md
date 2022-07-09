@@ -142,8 +142,7 @@ Watch this repo for new updates! And of course, contributions are welcome ;)
         - XBee, u-blox SARA R4/N4, ESP8266 (obviously)
 
 **SMS**
-- Only _sending_ SMS is supported, not receiving
-    - Supported on all cellular modules
+- Supported on all cellular modules
 
 **Voice Calls**
 - Supported on:
