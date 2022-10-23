@@ -37,8 +37,9 @@ void loop() {
   }
   int i = Serial.parseInt();
   Serial.print("Reading message at :- ");Serial.println(i);
-  String SMS=modem.readSMS(i);
-  String ID=modem.getSenderID(i);
+  String SMS="";
+  String ID="";
+  modem.readSMS(i, ID, SMS);
   Serial.print("Message From : ");Serial.println(ID);
   Serial.println(" and the message is ");
   Serial.println(SMS);

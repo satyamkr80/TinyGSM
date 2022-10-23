@@ -42,8 +42,24 @@ class TinyGsmSMS {
     String h="";
     thisModem().streamSkipUntil('\n');
     thisModem().streamSkipUntil('\n');
-    h=thisModem().stream.readStringUntil('\n');
+    h = thisModem().stream.readString();
+    h.remove(h.length()-8, 8);  // Strip trailing "OK" + CR/LF
     return h;
+  }
+  String readSMS(int index, String &sender, String &message, const bool changeStatusToRead = true){
+    thisModem().sendAT(GF("+CMGF=1"));
+    thisModem().waitResponse();  
+    thisModem().sendAT(GF("+CMGR="), index, GF(","), static_cast<const uint8_t>(!changeStatusToRead)); 
+    sender = "";
+    message = "";
+    thisModem().streamSkipUntil('"');
+    thisModem().streamSkipUntil('"');
+    thisModem().streamSkipUntil('"');
+    sender = thisModem().stream.readStringUntil('"');
+    thisModem().streamSkipUntil('\n');
+    message = thisModem().stream.readString();
+    message.remove(message.length()-8, 8);  // Strip trailing "OK" + CR/LF
+    return message;
   }
   int newMessageIndex(bool mode){
     thisModem().sendAT(GF("+CMGF=1"));
@@ -68,6 +84,12 @@ class TinyGsmSMS {
     thisModem().waitResponse(); 
     thisModem().sendAT(GF("+CMGDA=\"DEL ALL\""));
     return thisModem().waitResponse(60000L) == 1;
+  }
+  bool deleteSMS(int index, int delflag=0) {
+    thisModem().sendAT(GF("+CMGF=1"));
+    thisModem().waitResponse(); 
+    thisModem().sendAT(GF("+CMGD="), index, GF(","), delflag);
+    return thisModem().waitResponse(5000L) == 1;
   }
   String getSenderID(int index, const bool changeStatusToRead = true){
     thisModem().sendAT(GF("+CMGF=1"));
